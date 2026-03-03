@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Grunnstoff">
+<meta name="theme-color" content="#0f172a">
+<title>Periodesystemet Quiz</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);min-height:100vh;min-height:100dvh;color:#f1f5f9}
+#root{min-height:100vh;min-height:100dvh}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const e=React.createElement,{useState,useRef}=React;
+
+const elements=[
+{symbol:"H",name:"Hydrogen",no:1,year:"1766",by:"Henry Cavendish",named:"Fra gresk 'hydro' (vann) + 'genes' (skaper) – altså 'vannskaper'.",facts:["Hydrogen er det letteste og mest tallrike grunnstoffet i universet – det utgjør ca. 75 % av all vanlig materie.","Solen drives av fusjon av hydrogen til helium. Hvert sekund omdannes 600 millioner tonn hydrogen.","Hydrogen ble brukt i luftskip som Hindenburg – helt til det tok fyr i 1937."]},
+{symbol:"He",name:"Helium",no:2,year:"1868",by:"Pierre Janssen & Joseph Norman Lockyer",named:"Oppkalt etter den greske solguden Helios, fordi det først ble oppdaget i sollyset.",facts:["Helium ble oppdaget i sollyset under en solformørkelse – før det ble funnet på jorden.","Det er det eneste grunnstoffet som ikke kan fryses til fast form ved vanlig trykk.","Helium er en ikke-fornybar ressurs på jorden – når det slippes ut, forsvinner det til verdensrommet for alltid."]},
+{symbol:"Li",name:"Litium",no:3,year:"1817",by:"Johan August Arfwedson",named:"Fra gresk 'lithos' (stein), fordi det ble funnet i et mineral.",facts:["Litium er det letteste metallet – det flyter på vann (og reagerer med det!).","Det brukes i batterier i nesten alle smarttelefoner og elbiler.","Litiumforbindelser brukes også som stemningsstabiliserende medisin mot bipolar lidelse."]},
+{symbol:"Be",name:"Beryllium",no:4,year:"1798",by:"Louis Nicolas Vauquelin",named:"Oppkalt etter mineralet beryll, fra gresk 'beryllos' (en grønn edelsten).",facts:["Beryllium er ekstremt lett og stivt, og brukes i romfart og satellitter.","Smaragder får sin grønne farge fra spor av krom i berylliummineralet beryll.","James Webb-romteleskopets speil er laget av gullbelagt beryllium."]},
+{symbol:"B",name:"Bor",no:5,year:"1808",by:"Humphry Davy, Gay-Lussac & Thénard",named:"Fra arabisk 'buraq' eller persisk 'burah', gamle navn for boraks.",facts:["Bor er essensielt for plantevekst, men giftig for planter i store mengder.","Boraks har vært brukt som rengjøringsmiddel i over 4000 år.","Bornitrid, en borforbindelse, er nesten like hardt som diamant."]},
+{symbol:"C",name:"Karbon",no:6,year:"Kjent siden oldtiden",by:"Ukjent",named:"Fra latin 'carbo' som betyr kull eller trekull.",facts:["Karbon er grunnlaget for alt kjent liv og kan danne flere forbindelser enn noe annet grunnstoff.","Diamant og grafitt er begge rent karbon – bare atomene er ordnet forskjellig.","Et enkelt gram karbon i form av grafén kan dekke en hel fotballbane – det er bare ett atom tykt."]},
+{symbol:"N",name:"Nitrogen",no:7,year:"1772",by:"Daniel Rutherford",named:"Fra gresk 'nitron' (salpeter) + 'genes' (skaper) – 'salpeterskaper'.",facts:["Nitrogen utgjør 78 % av luften vi puster inn.","Flytende nitrogen brukes til å fryse alt fra vorter til iskrem på sekunder (–196 °C).","TNT, nitroglyserin og de fleste sprengstoff er nitrogenforbindelser."]},
+{symbol:"O",name:"Oksygen",no:8,year:"1774",by:"Joseph Priestley & Carl Wilhelm Scheele",named:"Fra gresk 'oxys' (syre) + 'genes' (skaper) – man trodde oksygen var i alle syrer.",facts:["Oksygen utgjør ca. 21 % av atmosfæren og 65 % av kroppsvekten din (mest i vann).","Flytende oksygen er lyseblått og svakt magnetisk!","Uten oksygen ville himmelen vært svart selv midt på dagen – det er oksygen som sprer blått lys."]},
+{symbol:"F",name:"Fluor",no:9,year:"1886",by:"Henri Moissan",named:"Fra latin 'fluere' (å flyte), fordi flusspat ble brukt som smeltehjelp.",facts:["Fluor er det mest reaktive av alle grunnstoffer – det reagerer med nesten alt, inkludert glass.","Det brukes i tannkrem (fluorid) for å styrke tannemaljen.","Flere kjemikere ble skadet eller døde i forsøk på å isolere fluor før Moissan lyktes."]},
+{symbol:"Ne",name:"Neon",no:10,year:"1898",by:"William Ramsay & Morris Travers",named:"Fra gresk 'neos' som betyr 'ny'.",facts:["Ekte neonskilt lyser rødoransje. Andre farger bruker andre gasser.","Neon er ekstremt sjeldent i jordatmosfæren – bare 0,0018 %.","Neon leder elektrisitet og lyser selv ved svært lave spenninger – perfekt for skilt."]},
+{symbol:"Na",name:"Natrium",no:11,year:"1807",by:"Humphry Davy",named:"Symbolet Na fra latin 'natrium', fra egyptisk 'natron' (soda).",facts:["Rent natrium eksploderer i kontakt med vann!","Natriumdamp gir gatebelysning den karakteristiske gule fargen.","Humphry Davy danset rundt i laboratoriet av glede da han først isolerte natrium ved elektrolyse."]},
+{symbol:"Mg",name:"Magnesium",no:12,year:"1755",by:"Joseph Black",named:"Oppkalt etter Magnesia, et distrikt i Thessalia, Hellas.",facts:["Magnesium brenner med et intenst hvitt lys og var tidlig brukt i fotografiblits.","Det er det åttende mest tallrike grunnstoffet i jordskorpen.","Klorofyll – molekylet som gjør planter grønne – har et magnesiumatom i sentrum."]},
+{symbol:"Al",name:"Aluminium",no:13,year:"1825",by:"Hans Christian Ørsted",named:"Fra latin 'alumen' (alun), et salt kjent siden antikken.",facts:["Aluminium var en gang dyrere enn gull! Napoleon III serverte æresgjester med aluminiumsbestikk.","Det er det vanligste metallet i jordskorpen.","Aluminiumsfolie har en blank og en matt side – det er bare fordi to ark valses samtidig."]},
+{symbol:"Si",name:"Silisium",no:14,year:"1824",by:"Jöns Jacob Berzelius",named:"Fra latin 'silex' (flint/kiselstein).",facts:["Silisium er grunnlaget for all moderne elektronikk – derav navnet 'Silicon Valley'.","Det er det nest vanligste grunnstoffet i jordskorpen etter oksygen.","Glass er hovedsakelig silisiumdioksid – teknisk sett lages datamaskiner av sand!"]},
+{symbol:"P",name:"Fosfor",no:15,year:"1669",by:"Hennig Brand",named:"Fra gresk 'phosphoros' som betyr 'lysbærer'.",facts:["Fosfor ble oppdaget ved å koke ned store mengder urin – av en alkymist som lette etter gull!","Hvitt fosfor lyser i mørket (fosforescens) og er ekstremt giftig.","DNA-molekylet ditt har en fosfor-sukker-ryggrad – uten fosfor, intet liv."]},
+{symbol:"S",name:"Svovel",no:16,year:"Kjent siden oldtiden",by:"Ukjent",named:"Fra sanskrit 'sulvere' eller latin 'sulpur'. Kalles 'brimstone' på engelsk.",facts:["Svovel ble kalt 'brimstone' og assosiert med helvete på grunn av lukten.","Vulkanske områder som på Island og Io (Jupiters måne) har store forekomster av svovel.","Svovel er essensielt i to av de 20 aminosyrene kroppen din bruker til å bygge proteiner."]},
+{symbol:"Cl",name:"Klor",no:17,year:"1774",by:"Carl Wilhelm Scheele",named:"Fra gresk 'chloros' som betyr 'gulgrønn', etter fargen på gassen.",facts:["Klor brukes til å rense drikkevann – en av de viktigste oppdagelsene for folkehelse.","I ren form er klor en giftig, gulgrønn gass med stikkende lukt.","Bordsalt (NaCl) er halvparten klor – et av de giftigste grunnstoffene i et av de tryggeste stoffene!"]},
+{symbol:"Ar",name:"Argon",no:18,year:"1894",by:"Lord Rayleigh & William Ramsay",named:"Fra gresk 'argos' som betyr 'lat' – fordi det nesten ikke reagerer med noe.",facts:["Argon utgjør nesten 1 % av atmosfæren – den tredje vanligste gassen.","Det brukes i lyspærer, sveising og mellom vindusruter som isolering.","Argon-argon-datering brukes til å bestemme alderen på bergarter og fossiler."]},
+{symbol:"K",name:"Kalium",no:19,year:"1807",by:"Humphry Davy",named:"Symbolet K fra latin 'kalium', fra arabisk 'al-qalyah' (planteaske).",facts:["Rent kalium eksploderer i kontakt med vann – enda mer voldsomt enn natrium!","Kalium er essensielt for nervesignaler og hjerterytme. Bananer er en kjent kilde.","Kalium-40 er naturlig radioaktivt – du sender faktisk ut stråling fra bananene du spiser (men helt ufarlig)."]},
+{symbol:"Ca",name:"Kalsium",no:20,year:"1808",by:"Humphry Davy",named:"Fra latin 'calx' (kalk).",facts:["Kalsium er det femte mest tallrike grunnstoffet i jordskorpen.","Skjelettet ditt inneholder ca. 1 kg kalsium, mest som kalsiumfosfat.","Kalkstein, marmor, kritt og korallrev er alle hovedsakelig kalsiumkarbonat."]},
+{symbol:"Sc",name:"Scandium",no:21,year:"1879",by:"Lars Fredrik Nilson",named:"Oppkalt etter Skandinavia (latin 'Scandia').",facts:["Scandium ble forutsagt av Mendelejev som 'eka-bor' før det ble oppdaget.","Det brukes i aluminiumslegeringer for sykkelrammer og baseballbat.","Scandium er ganske vanlig i jordskorpen, men finnes aldri konsentrert nok til enkel utvinning."]},
+{symbol:"Ti",name:"Titan",no:22,year:"1791",by:"William Gregor",named:"Oppkalt etter titanene i gresk mytologi – de mektige urgudene.",facts:["Titan er like sterkt som stål, men 45 % lettere.","Det brukes i alt fra flyskrog til hofteproteser og tannimplantater.","Titan er ekstremt biokompatibelt – kroppen din avviser det nesten aldri."]},
+{symbol:"V",name:"Vanadium",no:23,year:"1801",by:"Andrés Manuel del Río",named:"Oppkalt etter Vanadis, et norrønt navn for gudinnen Frøya.",facts:["Vanadium-stål er ekstremt sterkt og ble brukt i Henry Fords Model T.","Del Río oppdaget det først, men ble ikke trodd – det ble 'gjenoppdaget' 30 år senere.","Vanadium gir noen edelstener sine farger: blått i tanzanitt, grønt i vanadinitt."]},
+{symbol:"Cr",name:"Krom",no:24,year:"1797",by:"Louis Nicolas Vauquelin",named:"Fra gresk 'chroma' (farge), fordi kromforbindelser har mange ulike farger.",facts:["Krom gir rubiner den røde fargen og smaragder den grønne – samme grunnstoff, ulike farger!","Forkromming gir den blanke, speilende overflaten på bildetaljer.","Rustfritt stål inneholder minst 10,5 % krom som beskytter mot rust."]},
+{symbol:"Mn",name:"Mangan",no:25,year:"1774",by:"Johan Gottlieb Gahn",named:"Fra latin 'magnes' (magnet), pga. manganholdige mineraler.",facts:["Mangan brukes i stålproduksjon for å gjøre stålet hardere og sterkere.","Hulemalerier fra 17 000 år siden brukte mangandioksid som svart pigment.","Fotosyntese er avhengig av et kluster med fire manganatomer."]},
+{symbol:"Fe",name:"Jern",no:26,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Fe fra latin 'ferrum'. 'Jern' fra norrønt.",facts:["Jordas kjerne består hovedsakelig av jern – nok til å lage tre nye måner.","Jern i hemoglobinet gir blodet ditt den røde fargen.","Det tidligste jernet mennesker brukte kom fra meteoritter – 'himmeljern'."]},
+{symbol:"Co",name:"Kobolt",no:27,year:"1735",by:"Georg Brandt",named:"Fra tysk 'Kobold' (nisse/demon) – gruvearbeidere trodde ånder forgiftet malmen.",facts:["Kobolt har gitt den dype blåfargen i keramikk og glass i tusenvis av år.","Det var det første metallet oppdaget av en navngitt person og ikke kjent fra oldtiden.","Kobolt-60 brukes i kreftbehandling og til sterilisering av medisinsk utstyr."]},
+{symbol:"Ni",name:"Nikkel",no:28,year:"1751",by:"Axel Fredrik Cronstedt",named:"Fra tysk 'Kupfernickel' (falsk kobber) – gruvearbeidere ble lurt av det kobberliknende mineralet.",facts:["De fleste 'nikkel'-mynter inneholder faktisk mer kobber enn nikkel.","Nikkel er viktig i rustfritt stål og oppladbare batterier.","Nikkel er en av årsakene til metallallergi – den vanligste kontaktallergien i verden."]},
+{symbol:"Cu",name:"Kobber",no:29,year:"Kjent siden oldtiden",by:"Ukjent (ca. 9000 f.Kr.)",named:"Symbolet Cu fra latin 'cuprum', etter øya Kypros.",facts:["Frihetsgudinnen er dekket av ca. 80 tonn kobber som har oksidert til ikonisk grønn.","Kobber er naturlig antibakterielt – dørhåndtak i kobber dreper bakterier.","Det var det første metallet mennesker lærte å smelte, for over 10 000 år siden."]},
+{symbol:"Zn",name:"Sink",no:30,year:"1746",by:"Andreas Sigismund Marggraf",named:"Trolig fra tysk 'Zinke' (tagg), etter formen på sinkkrystaller.",facts:["Sink er essensielt for immunforsvaret – derfor finnes det i halstabletter.","Det brukes til galvanisering (rustbeskyttelse) av stål.","Kroppen din inneholder ca. 2–3 gram sink, fordelt på alle cellene."]},
+{symbol:"Ga",name:"Gallium",no:31,year:"1875",by:"Paul Emile Lecoq de Boisbaudran",named:"Oppkalt etter Gallia, det latinske navnet for Frankrike.",facts:["Gallium smelter i hånden din! Smeltepunktet er bare 29,76 °C.","Det ble forutsagt av Mendelejev som 'eka-aluminium'.","Galliumarsenid brukes i LED-lys og solceller."]},
+{symbol:"Ge",name:"Germanium",no:32,year:"1886",by:"Clemens Winkler",named:"Oppkalt etter Tyskland (latin 'Germania').",facts:["Germanium var nøkkelen til de første transistorene.","Forutsagt av Mendelejev som 'eka-silisium'.","Germaniumlinser brukes i infrarøde kameraer og nattsikter."]},
+{symbol:"As",name:"Arsen",no:33,year:"ca. 1250",by:"Albertus Magnus",named:"Fra gresk 'arsenikon' (gult pigment), muligens fra persisk 'zarnikh' (gullfarget).",facts:["Arsen ble kalt 'arvepulver' fordi det ble brukt til giftmord i renessansen.","Napoleons tapeter inneholdt arsenbasert grønnfarge – noen mener det bidro til hans død.","I viktoriansk tid spiste kvinner arsen for blekere hud – ekstremt farlig!"]},
+{symbol:"Se",name:"Selen",no:34,year:"1817",by:"Jöns Jacob Berzelius",named:"Oppkalt etter månen (gresk 'Selene'), som motstykke til tellur (jorden).",facts:["Selen er essensielt for mennesker, men giftig i store doser.","Det leder strøm bedre når lys treffer det – brukt i solceller.","Paranøtter er den rikeste matkilden til selen."]},
+{symbol:"Br",name:"Brom",no:35,year:"1826",by:"Antoine Jérôme Balard",named:"Fra gresk 'bromos' (stank) – brom lukter virkelig forferdelig.",facts:["Brom er det eneste ikke-metallet som er flytende ved romtemperatur.","Tyrian purple, oldtidens dyreste farge, ble utvunnet fra en bromforbindelse i snegler.","Bromid-salter ble brukt som beroligende middel på 1800-tallet."]},
+{symbol:"Kr",name:"Krypton",no:36,year:"1898",by:"William Ramsay & Morris Travers",named:"Fra gresk 'kryptos' som betyr 'skjult'.",facts:["Ja, krypton er ekte – men nei, det svekker ikke Superman.","Fra 1960 til 1983 var meteren definert ut fra krypton-86-lys.","Krypton brukes i energieffektive vinduer og fotografiblits."]},
+{symbol:"Rb",name:"Rubidium",no:37,year:"1861",by:"Robert Bunsen & Gustav Kirchhoff",named:"Fra latin 'rubidus' (mørkerød), etter de røde spektrallinjene.",facts:["Rubidium ble oppdaget med spektroskopi – en av de første gangene.","Det er så reaktivt at det spontant antennes i luft.","Rubidium brukes i atomklokker og GPS-satellitter."]},
+{symbol:"Sr",name:"Strontium",no:38,year:"1790",by:"Adair Crawford",named:"Oppkalt etter landsbyen Strontian i Skottland.",facts:["Strontiumforbindelser gir den røde fargen i fyrverkeri.","Strontium-90 var en farlig komponent i nedfall fra atomprøvesprengninger.","Strontiumranelat brukes som medisin mot benskjørhet."]},
+{symbol:"Y",name:"Yttrium",no:39,year:"1794",by:"Johan Gadolin",named:"Oppkalt etter landsbyen Ytterby i Sverige – fire grunnstoffer ble oppdaget der!",facts:["Yttrium brukes i LED-lys, lasere og kreftbehandling.","Yttrium-barium-kobber-oksid var det første høytemperatur-supraledende materialet.","Johan Gadolin regnes som grunnleggeren av finsk kjemi."]},
+{symbol:"Zr",name:"Zirkonium",no:40,year:"1789",by:"Martin Heinrich Klaproth",named:"Fra mineralet zirkon, trolig fra persisk 'zargun' (gullfarge).",facts:["Kubisk zirkonia brukes som billig diamanterstatning i smykker.","Det brukes i atomreaktorer fordi det absorberer svært lite nøytroner.","Zirkon-krystaller fra Australia er 4,4 milliarder år gamle – de eldste kjente mineralene."]},
+{symbol:"Nb",name:"Niob",no:41,year:"1801",by:"Charles Hatchett",named:"Oppkalt etter Niobe i gresk mytologi, datter av Tantalos.",facts:["Niob brukes i supraledende magneter i MRI-maskiner og CERN.","Brasil produserer over 90 % av verdens niob.","Niob var kjent som 'columbium' i USA – navnestriden varte over 100 år."]},
+{symbol:"Mo",name:"Molybden",no:42,year:"1781",by:"Carl Wilhelm Scheele",named:"Fra gresk 'molybdos' (bly), fordi det ble forvekslet med blymineraler.",facts:["Molybden har et av de høyeste smeltepunktene (2623 °C).","Det er et essensielt sporstoff – enzymer i kroppen trenger det.","Molybden brukes i høystyrkestål for rørledninger."]},
+{symbol:"Tc",name:"Teknetium",no:43,year:"1937",by:"Carlo Perrier & Emilio Segrè",named:"Fra gresk 'technetos' (kunstig) – det første kunstig fremstilte grunnstoffet.",facts:["Teknetium brukes i medisinsk bildediagnostikk (over 10 millioner prosedyrer årlig).","Alle isotopene er radioaktive – det finnes praktisk talt ikke naturlig.","Mendelejev forutsa dets eksistens i 1871 som 'eka-mangan'."]},
+{symbol:"Ru",name:"Ruthenium",no:44,year:"1844",by:"Karl Ernst Claus",named:"Oppkalt etter Russland (latin 'Ruthenia').",facts:["Ruthenium brukes i slitesterke elektriske kontakter og harddiskbelegg.","Det er et av de sjeldneste platinametallene.","Ruthenium-forbindelser utforskes som fremtidige solcelle-materialer."]},
+{symbol:"Rh",name:"Rhodium",no:45,year:"1803",by:"William Hyde Wollaston",named:"Fra gresk 'rhodon' (rose), pga. rosarøde saltløsninger.",facts:["Rhodium er et av verdens dyreste metaller – tidvis langt dyrere enn gull.","Det brukes i katalysatorer i biler for å rense avgasser.","Rhodium er så verdifullt at tyverier av katalysatorer har blitt et stort problem."]},
+{symbol:"Pd",name:"Palladium",no:46,year:"1803",by:"William Hyde Wollaston",named:"Oppkalt etter asteroiden Pallas, oppkalt etter gudinnen Athena Pallas.",facts:["Palladium kan absorbere 900 ganger sitt eget volum av hydrogen.","Det brukes i katalysatorer, tannfyllinger og hvitgull.","Wollaston annonserte oppdagelsen anonymt i en avisannonse!"]},
+{symbol:"Ag",name:"Sølv",no:47,year:"Kjent siden oldtiden",by:"Ukjent (ca. 5000 f.Kr.)",named:"Symbolet Ag fra latin 'argentum' (skinnende). Argentina er oppkalt etter sølv!",facts:["Sølv er den beste elektriske lederen av alle grunnstoffer.","Sølv har naturlige antibakterielle egenskaper og brukes i sårbandasjer.","I gamle dager la folk sølvmynter i melken for å holde den frisk."]},
+{symbol:"Cd",name:"Kadmium",no:48,year:"1817",by:"Friedrich Stromeyer",named:"Fra latin 'cadmia' (sinkmalm), funnet som forurensning i sinkoksid.",facts:["Kadmiumgult var en populær malingsfarge brukt av Monet og Van Gogh.","Det er svært giftig og strengt regulert i dag.","Japan opplevde 'itai-itai-sykdommen' på grunn av kadmiumforurensning."]},
+{symbol:"In",name:"Indium",no:49,year:"1863",by:"Ferdinand Reich & H. T. Richter",named:"Oppkalt etter den indigoblå spektrallinjen som avslørte det.",facts:["Indium-tinn-oksid gjør berøringsskjermer mulige – gjennomsiktig og ledende.","Indium er så mykt at du kan bite i det, og det knirker når det bøyes.","Reich var fargeblind og kunne ikke se spektrallinjen selv!"]},
+{symbol:"Sn",name:"Tinn",no:50,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Sn fra latin 'stannum'. 'Tinn' fra norrønt.",facts:["Tinn ble brukt i bronse for 5000 år siden – bronsealderen er oppkalt etter det.","Ved lave temperaturer kan tinn gå gjennom 'tinnpest' – det smuldrer til pulver!","Scotts Sydpol-ekspedisjon kan ha mislyktes delvis pga. tinnpest på drivstoffbeholderne."]},
+{symbol:"Sb",name:"Antimon",no:51,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Sb fra latin 'stibium'. 'Antimon' kan bety 'ikke alene'.",facts:["Antimon ble brukt som øyesminke (kohl) i det gamle Egypt.","Det brukes i flammehemmende materialer.","Antimonbeger ble brukt medisinsk – man drakk vin fra dem som 'kur'."]},
+{symbol:"Te",name:"Tellur",no:52,year:"1783",by:"Franz-Joseph Müller von Reichenstein",named:"Oppkalt etter jorden (latin 'tellus').",facts:["Selv små mengder tellur gir deg intens hvitløksånde i dagevis!","Tellur er sjeldnere enn gull i jordskorpen.","Det brukes i kadmiumtellurid-solceller."]},
+{symbol:"I",name:"Jod",no:53,year:"1811",by:"Bernard Courtois",named:"Fra gresk 'iodes' (fiolett), etter fargen på joddampen.",facts:["Jod sublimerer direkte til en vakker fiolett gass.","Det er essensielt for skjoldbruskkjertelen og tilsettes bordsalt.","Courtois oppdaget jod ved en tilfeldighet – katten hans veltet syre på tangaske!"]},
+{symbol:"Xe",name:"Xenon",no:54,year:"1898",by:"William Ramsay & Morris Travers",named:"Fra gresk 'xenos' (fremmed/gjest).",facts:["Xenon-lys brukes i IMAX-projektorer og kraftige frontlykter.","Xenon var den første edelgassen som ble tvunget til å danne forbindelser (1962).","Xenon brukes som narkose – dyrt, men nesten ingen bivirkninger."]},
+{symbol:"Cs",name:"Cesium",no:55,year:"1860",by:"Robert Bunsen & Gustav Kirchhoff",named:"Fra latin 'caesius' (himmelblå), etter de blå spektrallinjene.",facts:["Cesium er så reaktivt at det eksploderer i kontakt med is!","Cesium-133-atomklokker definerer sekundet.","Cesium smelter ved bare 28,4 °C."]},
+{symbol:"Ba",name:"Barium",no:56,year:"1808",by:"Humphry Davy",named:"Fra gresk 'barys' (tungt).",facts:["Bariumsulfat drikkes før røntgen – uløselig og ufarlig.","Bariumnitrat gir grønn farge i fyrverkeri.","'Bologna-stein' (bariumsulfat) lyste etter oppvarming – fascinerte alkymister."]},
+{symbol:"La",name:"Lantan",no:57,year:"1839",by:"Carl Gustaf Mosander",named:"Fra gresk 'lanthanein' (å ligge skjult) – det gjemte seg i et annet mineral.",facts:["Lantan brukes i hybridbilbatterier og studiolys.","Lantanoidene kalles 'sjeldne jordarter', men de fleste er ikke spesielt sjeldne.","Lantan brukes i kameralinser for bedre lysbrytning."]},
+{symbol:"Ce",name:"Cerium",no:58,year:"1803",by:"Berzelius & Hisinger",named:"Oppkalt etter dvergplaneten Ceres.",facts:["Cerium brukes i selvrengjørende stekeovner og glasspoleiring.","Det er vanligere enn bly i jordskorpen.","Cerium-jern-legeringer gir gnisten i lightere."]},
+{symbol:"Pr",name:"Praseodym",no:59,year:"1885",by:"Carl Auer von Welsbach",named:"Fra gresk 'prasios didymos' (grønn tvilling).",facts:["Praseodym gir glass vakker grønn farge, brukt i sveisebriller.","Det brukes i flymotorlegeringer for å tåle høye temperaturer.","Det ble separert fra 'didymium', som var en blanding av to grunnstoffer."]},
+{symbol:"Nd",name:"Neodym",no:60,year:"1885",by:"Carl Auer von Welsbach",named:"Fra gresk 'neos didymos' (ny tvilling).",facts:["Neodymmagneter er de sterkeste permanentmagnetene som finnes.","De brukes i hodetelefoner, vindturbiner og elbilmotorer.","En neodymmagnet på størrelse med en mynt kan løfte over 10 kg!"]},
+{symbol:"Pm",name:"Promethium",no:61,year:"1945",by:"Marinsky, Glendenin & Coryell",named:"Oppkalt etter Prometheus, som stjal ilden fra gudene.",facts:["Det eneste lantanoidet uten stabile isotoper.","Brukt i selvlysende maling og atomdrevne batterier.","Først isolert fra fissjonsprodukter i en atomreaktor."]},
+{symbol:"Sm",name:"Samarium",no:62,year:"1879",by:"Lecoq de Boisbaudran",named:"Etter mineralet samarskitt, oppkalt etter gruveingeniøren Vasili Samarsky-Bykhovets.",facts:["Samarium-kobolt-magneter tåler ekstrem varme.","Samarsky-Bykhovets var den første personen med et grunnstoff oppkalt etter seg.","Samarium-153 brukes i kreftbehandling."]},
+{symbol:"Eu",name:"Europium",no:63,year:"1901",by:"Eugène-Anatole Demarçay",named:"Oppkalt etter kontinentet Europa.",facts:["Europium gir rød farge i TV-skjermer og fluorescerende sikkerhet i eurosedler.","Det er det mest reaktive lantanoidet.","Europium brukes til å datere Chicxulub-nedslaget."]},
+{symbol:"Gd",name:"Gadolinium",no:64,year:"1880",by:"Jean Charles Galissard de Marignac",named:"Oppkalt etter Johan Gadolin, grunnleggeren av studiet av sjeldne jordarter.",facts:["Gadolinium brukes som kontrastmiddel i MRI.","Det er sterkt magnetisk ved romtemperatur – uvanlig for sjeldne jordarter.","Gadolinium-forbindelser utforskes for miljøvennlig magnetisk kjøling."]},
+{symbol:"Tb",name:"Terbium",no:65,year:"1843",by:"Carl Gustaf Mosander",named:"Oppkalt etter Ytterby i Sverige.",facts:["Terbium gir grønt lys i fluorescerende lamper og farge-TV.","Det brukes i Terfenol-D som endrer form i magnetfelt.","Uunnværlig i grønn teknologi tross sin sjeldenhet."]},
+{symbol:"Dy",name:"Dysprosium",no:66,year:"1886",by:"Lecoq de Boisbaudran",named:"Fra gresk 'dysprositos' (vanskelig å få tak i).",facts:["Brukes i neodymmagneter for varmebestandighet.","Kritisk for vindturbiner og elbiler.","Har en av de høyeste magnetiske styrker per atom."]},
+{symbol:"Ho",name:"Holmium",no:67,year:"1878",by:"Delafontaine & Soret",named:"Oppkalt etter Stockholm (latin 'Holmia').",facts:["Holmium har den sterkeste magnetiske egenskapen av alle grunnstoffer.","Holmiumlasere brukes til å fjerne nyrestein.","Cleve oppdaget det uavhengig uten å vite om Sorets funn."]},
+{symbol:"Er",name:"Erbium",no:68,year:"1843",by:"Carl Gustaf Mosander",named:"Oppkalt etter Ytterby i Sverige.",facts:["Erbium gir rosa farge i spesialglass og solbriller.","Det brukes i fiberoptiske forsterkere som driver internett.","Erbium-lasere brukes i hudbehandlinger."]},
+{symbol:"Tm",name:"Thulium",no:69,year:"1879",by:"Per Teodor Cleve",named:"Oppkalt etter Thule, det antikke navnet for det ytterste nord/Skandinavia.",facts:["Det nest sjeldneste lantanoidet (etter promethium).","Brukes i bærbare røntgenapparater.","Thulium-lasere brukes i militære mottiltak mot missiler."]},
+{symbol:"Yb",name:"Ytterbium",no:70,year:"1878",by:"Marignac",named:"Det fjerde grunnstoffet oppkalt etter Ytterby i Sverige!",facts:["Ytterbium-atomklokker er blant de mest presise tidsmålerne.","Under ekstremt trykk dobler det sin ledningsevne.","Brukes i stålegeringer for forbedret styrke."]},
+{symbol:"Lu",name:"Lutetium",no:71,year:"1907",by:"Georges Urbain & Carl Auer von Welsbach",named:"Oppkalt etter Lutetia, det romerske navnet for Paris.",facts:["Lutetium er det hardeste og tetteste lantanoidet.","Brukes som katalysator i oljeraffinering.","Lutetium-176 brukes til å datere meteoritter."]},
+{symbol:"Hf",name:"Hafnium",no:72,year:"1923",by:"Dirk Coster & George de Hevesy",named:"Oppkalt etter København (latin 'Hafnia').",facts:["Brukes i kontrollstaver i atomreaktorer.","Finnes alltid sammen med zirkonium – svært vanskelig å skille.","Intel bruker hafniumoksid i nanoskala-transistorer."]},
+{symbol:"Ta",name:"Tantal",no:73,year:"1802",by:"Anders Gustaf Ekeberg",named:"Oppkalt etter Tantalos i gresk mytologi – straffet til evig tørst, som metallets motstand mot syrer.",facts:["Tantal brukes i kondensatorer i mobiltelefoner.","Et 'konfliktmineral' – utvinning har drevet konflikter i Kongo.","Nesten immunt mot korrosjon – bare kongevann og flussyre kan løse det."]},
+{symbol:"W",name:"Wolfram",no:74,year:"1783",by:"Juan José & Fausto Elhuyar",named:"Symbolet W fra 'wolfram' – tysk for 'ulveskum', fordi det 'spiste' tinn.",facts:["Wolfram har det høyeste smeltepunktet av alle metaller: 3422 °C.","Brukes i glødetråder og panserbrytende ammunisjon.","En terning wolfram på 2,5 cm veier nesten en kvart kilo!"]},
+{symbol:"Re",name:"Rhenium",no:75,year:"1925",by:"Ida Tacke, Walter Noddack & Otto Berg",named:"Oppkalt etter Rhinen, elven gjennom Tyskland.",facts:["Det nest siste stabile grunnstoffet som ble oppdaget.","Brukes i jetmotorer pga. ekstrem varmebestandighet.","Ida Tacke foreslo også kjernefisjon, men ble ignorert."]},
+{symbol:"Os",name:"Osmium",no:76,year:"1803",by:"Smithson Tennant",named:"Fra gresk 'osme' (lukt) – osmiumtetroksid lukter svært skarpt.",facts:["Det tetteste naturlig forekommende grunnstoffet (22,59 g/cm³).","Osmiumtetroksid er ekstremt giftig.","Ble brukt i fonografnåler og fyrstikkfabrikker."]},
+{symbol:"Ir",name:"Iridium",no:77,year:"1803",by:"Smithson Tennant",named:"Oppkalt etter Iris, regnbuens gudinne, fordi saltene har mange farger.",facts:["Et iridiumlag i jordskorpen beviser at en asteroide utslettet dinosaurene.","Et av de mest korrosjonsbestandige grunnstoffene.","Sjeldent på jorden, men vanlig i asteroider."]},
+{symbol:"Pt",name:"Platina",no:78,year:"1735",by:"Antonio de Ulloa",named:"Fra spansk 'platina' (lite sølv) – conquistadorer anså det som verdiløst!",facts:["Alt platina noensinne utvunnet ville fylt et rom på ca. 7,6 m³.","Kilogrammet var definert av en platina-iridium-sylinder til 2019.","Platina brukes i kreftmedisinen cisplatin."]},
+{symbol:"Au",name:"Gull",no:79,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Au fra latin 'aurum' (strålende morgenrøde).",facts:["Alt gull antas å stamme fra kolliderende nøytronstjerner.","Én unse kan trekkes til en tråd over 80 km lang.","OL-gullmedaljer er faktisk hovedsakelig sølv med et tynt lag gull."]},
+{symbol:"Hg",name:"Kvikksølv",no:80,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Hg fra latin 'hydrargyrum' (flytende sølv). Oppkalt etter planeten Merkur.",facts:["Det eneste metallet som er flytende ved romtemperatur.","Keiser Qin Shi Huang drakk kvikksølv i troen på evig liv.","'Gal hattemaker'-syndromet kom av kvikksølvforgiftning i filtproduksjon."]},
+{symbol:"Tl",name:"Thallium",no:81,year:"1861",by:"William Crookes",named:"Fra gresk 'thallos' (grønn skudd), etter den grønne spektrallinjen.",facts:["Kalt 'giftmakerens gift' – fargeløst, luktfritt og smakløst.","Agatha Christie brukte thalliumforgiftning i 'The Pale Horse'.","Flere land forbød fritt salg av thallium."]},
+{symbol:"Pb",name:"Bly",no:82,year:"Kjent siden oldtiden",by:"Ukjent",named:"Symbolet Pb fra latin 'plumbum' – derav 'plumber' (rørlegger).",facts:["Romerne brukte bly i vannrør og som søtningsmiddel i vin.","Bly brukes i strålebeskyttelse (røntgenvester).","Bly i bensin kan ha senket gjennomsnittlig IQ for en hel generasjon."]},
+{symbol:"Bi",name:"Vismut",no:83,year:"1753",by:"Claude François Geoffroy",named:"Trolig fra tysk 'Wismuth' (hvit masse).",facts:["Vismut danner fantastisk vakre, regnbuefargede krystaller.","Pepto-Bismol inneholder vismutsubsalisylat.","Vismut er svakt radioaktivt – oppdaget i 2003."]},
+{symbol:"Po",name:"Polonium",no:84,year:"1898",by:"Marie & Pierre Curie",named:"Oppkalt etter Polen (latin 'Polonia'), Marie Curies okkuperte hjemland.",facts:["Et gram genererer 140 watt varme.","Polonium-210 ble brukt til å forgifte Alexander Litvinenko i 2006.","Marie Curie ønsket å rette oppmerksomhet mot Polens frihetskamp."]},
+{symbol:"At",name:"Astat",no:85,year:"1940",by:"Corson, MacKenzie & Segrè",named:"Fra gresk 'astatos' (ustabil).",facts:["Det sjeldneste naturlige grunnstoffet – under 30 gram i hele jordskorpen.","Brytes ned så raskt at det aldri er sett med det blotte øye.","Astat-211 forskes på for målrettet kreftbehandling."]},
+{symbol:"Rn",name:"Radon",no:86,year:"1900",by:"Friedrich Ernst Dorn",named:"Oppkalt etter radium, som det dannes fra.",facts:["Usynlig, luktfri radioaktiv gass som samler seg i kjellere.","Nest viktigste årsak til lungekreft etter røyking.","Spesielt vanlig i Norge pga. bergarter med uran og thorium."]},
+{symbol:"Fr",name:"Francium",no:87,year:"1939",by:"Marguerite Perey",named:"Oppkalt etter Frankrike (Francia).",facts:["Det mest ustabile av de første 101 grunnstoffene.","Trolig ikke mer enn 30 gram på hele jorden.","Perey var assistent for Marie Curie og ble den første kvinnen i det franske vitenskapsakademiet."]},
+{symbol:"Ra",name:"Radium",no:88,year:"1898",by:"Marie & Pierre Curie",named:"Fra latin 'radius' (stråle), pga. intens stråling.",facts:["Selvlysende maling med radium gjorde 'Radium Girls' alvorlig syke.","Marie Curie bar radium i lomma og beskrev det vakre blå lyset.","Curies notatbøker er fremdeles så radioaktive at de oppbevares i blyforede bokser."]},
+{symbol:"Ac",name:"Actinium",no:89,year:"1899",by:"André-Louis Debierne",named:"Fra gresk 'aktis' (stråle).",facts:["Actinium lyser blått i mørket.","150 ganger mer radioaktivt enn radium.","Actinium-225 utforskes for målrettet kreftbehandling."]},
+{symbol:"Th",name:"Thorium",no:90,year:"1829",by:"Jöns Jacob Berzelius",named:"Oppkalt etter Tor, den norrøne tordenguden.",facts:["Vurderes som tryggere alternativ til uran i kjernekraft.","India satser på thorium-basert kjernekraft.","Gasslykter på 1800-tallet brukte thoriumoksid for hvitt lys."]},
+{symbol:"Pa",name:"Protactinium",no:91,year:"1913",by:"Fajans & Göhring",named:"'Protos' (først) + actinium – fordi det brytes ned til actinium.",facts:["Et av de sjeldneste og dyreste naturlige grunnstoffene.","Ekstremt giftig og radioaktivt.","125 gram ble utvinnet fra 60 tonn avfall i 1961."]},
+{symbol:"U",name:"Uran",no:92,year:"1789",by:"Martin Heinrich Klaproth",named:"Oppkalt etter planeten Uranus.",facts:["1 kg uran = like mye energi som 20 000 kg kull.","Uranglass lyser grønt under UV-lys – populært i viktoriansk tid.","Naturlig uran er nesten ikke farlig – det er anriket uran som brukes i våpen."]},
+{symbol:"Np",name:"Neptunium",no:93,year:"1940",by:"McMillan & Abelson",named:"Oppkalt etter planeten Neptun – neste etter Uranus.",facts:["Det første transuranske grunnstoffet.","Dannes som biprodukt i atomreaktorer.","McMillan vant Nobelprisen i 1951."]},
+{symbol:"Pu",name:"Plutonium",no:94,year:"1940",by:"Seaborg, McMillan, Kennedy & Wahl",named:"Oppkalt etter Pluto – mønsteret Uran → Neptun → Pluto.",facts:["Brukes i RTG-er som driver Voyager og New Horizons.","Nagasaki-bomben brukte plutonium-239.","Mikrogram kan være dødelig ved innånding."]},
+{symbol:"Am",name:"Americium",no:95,year:"1944",by:"Glenn T. Seaborg m.fl.",named:"Oppkalt etter Amerika, som motstykke til europium (Europa) over i periodesystemet.",facts:["Finnes i nesten alle røykvarslere!","Først annonsert i et barneradioprogram i 1945.","Americium-241 ioniserer luft – røykpartikler utløser alarmen."]},
+{symbol:"Cm",name:"Curium",no:96,year:"1944",by:"Seaborg, James & Ghiorso",named:"Oppkalt etter Marie og Pierre Curie.",facts:["Lyser i mørket med et rødlig skjær.","Brukt på Mars-rovere for å analysere bergarter.","Curium-244 genererer nok varme til romfarts-energi."]},
+{symbol:"Bk",name:"Berkelium",no:97,year:"1949",by:"Seaborg, Thompson & Ghiorso",named:"Oppkalt etter Berkeley, California.",facts:["Bare noen få gram har noensinne blitt produsert.","22 mg berkelium ble brukt til å lage grunnstoff 117.","Det tok 250 dager å produsere nok til eksperimentet."]},
+{symbol:"Cf",name:"Californium",no:98,year:"1950",by:"Seaborg m.fl.",named:"Oppkalt etter California og University of California.",facts:["Kan koste opp mot 27 millioner dollar per gram.","Brukes til å starte atomreaktorer og i kreftbehandling.","En mikrogram sender ut 170 millioner nøytroner per minutt."]},
+{symbol:"Es",name:"Einsteinium",no:99,year:"1952",by:"Albert Ghiorso m.fl.",named:"Oppkalt etter Albert Einstein.",facts:["Oppdaget i nedfallet fra hydrogenbombeprøven 'Ivy Mike'.","Oppdagelsen ble holdt hemmelig i flere år.","Først studert i detalj i 2021 – 69 år etter oppdagelsen."]},
+{symbol:"Fm",name:"Fermium",no:100,year:"1952",by:"Albert Ghiorso m.fl.",named:"Oppkalt etter Enrico Fermi, som bygde verdens første atomreaktor.",facts:["Også funnet i nedfallet fra 'Ivy Mike'.","Fermium-257 har halveringstid på 100 dager.","Det tyngste grunnstoffet som kan lages ved nøytronfangst."]},
+{symbol:"Md",name:"Mendelevium",no:101,year:"1955",by:"Ghiorso m.fl.",named:"Oppkalt etter Dmitrij Mendelejev, skaperen av det periodiske system.",facts:["Bare noen få atomer produsert om gangen.","Det første grunnstoffet identifisert ett atom om gangen.","Å oppkalle det etter Mendelejev under den kalde krigen var en fredelig gest."]},
+{symbol:"No",name:"Nobelium",no:102,year:"1966",by:"JINR (Dubna)",named:"Oppkalt etter Alfred Nobel, grunnleggeren av Nobelprisen.",facts:["Oppdagelsen var omstridt i årevis.","Foretrekker uvanlig oksidasjonstall +2.","Mest stabile isotop har halveringstid på 58 minutter."]},
+{symbol:"Lr",name:"Lawrencium",no:103,year:"1961",by:"Albert Ghiorso m.fl.",named:"Oppkalt etter Ernest O. Lawrence, oppfinneren av syklotronen.",facts:["Det siste grunnstoffet i aktinidene.","Har en uventet elektronkonfigurasjon.","Lawrences syklotron muliggjorde mange grunnstoffoppdagelser."]},
+{symbol:"Rf",name:"Rutherfordium",no:104,year:"1969",by:"Ghiorso m.fl. / Flyorov m.fl.",named:"Oppkalt etter Ernest Rutherford, 'atomfysikkens far'.",facts:["Del av 'transfermium-krigene' mellom USA og Sovjet.","Russerne kalte det 'kurchatovium'.","Det første transaktinidet."]},
+{symbol:"Db",name:"Dubnium",no:105,year:"1970",by:"Ghiorso m.fl. / Flyorov m.fl.",named:"Oppkalt etter Dubna i Russland, hjemmet til JINR.",facts:["Amerikanerne ville kalle det 'hahnium'.","IUPAC avgjorde navnetvisten i 1997.","Oppfører seg kjemisk som tantal."]},
+{symbol:"Sg",name:"Seaborgium",no:106,year:"1974",by:"Albert Ghiorso m.fl.",named:"Oppkalt etter Glenn T. Seaborg – eneste person med grunnstoff oppkalt etter seg i live.",facts:["Seaborg bidro til oppdagelsen av ti grunnstoffer!","Kontroversielt å oppkalle etter en levende person.","Seaborg spøkte om å endelig kunne skrive adressen med grunnstoffsymboler."]},
+{symbol:"Bh",name:"Bohrium",no:107,year:"1981",by:"Armbruster & Münzenberg",named:"Oppkalt etter Niels Bohr, bak Bohr-modellen av atomet.",facts:["Bare noen få atomer har blitt fremstilt.","Laget ved GSI i Darmstadt, Tyskland.","Oppfører seg kjemisk som rhenium."]},
+{symbol:"Hs",name:"Hassium",no:108,year:"1984",by:"Armbruster & Münzenberg",named:"Oppkalt etter Hessen (latin 'Hassia'), der GSI ligger.",facts:["Oppfører seg kjemisk som osmium – periodesystemet fungerer!","Blant de best studierte supertunge grunnstoffene.","Hassiumtetroksid ble laget med bare noen få atomer."]},
+{symbol:"Mt",name:"Meitnerium",no:109,year:"1982",by:"Armbruster & Münzenberg",named:"Oppkalt etter Lise Meitner, sentral i oppdagelsen av kjernefisjon.",facts:["Meitner ble oversett av Nobelkomiteen.","Hun flyktet fra Nazi-Tyskland og fortsatte i Sverige.","Einstein kalte henne 'vår Marie Curie'."]},
+{symbol:"Ds",name:"Darmstadtium",no:110,year:"1994",by:"Sigurd Hofmann m.fl.",named:"Oppkalt etter byen Darmstadt i Tyskland.",facts:["Halveringstiden er bare mikrosekunder.","Darmstadt har gitt navn til tre grunnstoffer.","Laget ved å skyte nikkel mot bly."]},
+{symbol:"Rg",name:"Roentgenium",no:111,year:"1994",by:"Sigurd Hofmann m.fl.",named:"Oppkalt etter Wilhelm Röntgen, oppdageren av røntgenstråling.",facts:["Kun noen få atomer fremstilt.","Kan ha uventede egenskaper pga. relativistiske effekter.","Röntgen nektet å patentere røntgenstrålene."]},
+{symbol:"Cn",name:"Copernicium",no:112,year:"1996",by:"Sigurd Hofmann m.fl.",named:"Oppkalt etter Nicolaus Copernicus og den heliosentriske modellen.",facts:["Kan oppføre seg mer som edelgass enn metall!","Bekreftet som grunnstoff i 2009.","Hedrer den vitenskapelige revolusjonen."]},
+{symbol:"Nh",name:"Nihonium",no:113,year:"2003",by:"RIKEN (Japan)",named:"'Nihon' er japansk for Japan – det første grunnstoffet oppdaget i Asia.",facts:["Det tok over ti år å produsere bare tre atomer.","En kilde til nasjonal stolthet i Japan.","Lederen Morita dedikerte det til sin avdøde mentor."]},
+{symbol:"Fl",name:"Flerovium",no:114,year:"1999",by:"JINR & LLNL",named:"Oppkalt etter Flerov-laboratoriet, etter fysikeren Georgy Flyorov.",facts:["Kan ha uvanlige egenskaper pga. relativistiske effekter.","Flyorov skrev et berømt brev til Stalin om USAs atombombe.","Kan være en flyktig væske ved romtemperatur."]},
+{symbol:"Mc",name:"Moscovium",no:115,year:"2003",by:"JINR & LLNL",named:"Oppkalt etter Moskva-regionen.",facts:["Blitt kjent gjennom UFO-konspirasjonsteorier – helt ufortjent.","Brytes ned til nihonium.","Kun rundt 100 atomer har blitt produsert."]},
+{symbol:"Lv",name:"Livermorium",no:116,year:"2000",by:"JINR & LLNL",named:"Oppkalt etter Lawrence Livermore National Laboratory.",facts:["Halveringstiden er bare titalls millisekunder.","Lages ved å bombardere curium med kalsium.","Et 'øy-av-stabilitet'-grunnstoff."]},
+{symbol:"Ts",name:"Tennessine",no:117,year:"2010",by:"JINR m.fl.",named:"Oppkalt etter Tennessee, hjemmet til Oak Ridge National Laboratory.",facts:["Det nest tyngste grunnstoffet noensinne syntetisert.","Oak Ridge leverte berkelium-249 som mål.","Det eneste syntetiske halogenet."]},
+{symbol:"Og",name:"Oganesson",no:118,year:"2006",by:"JINR & LLNL",named:"Oppkalt etter Yuri Oganessian – en av kun to med grunnstoff oppkalt etter seg i live.",facts:["Kan være fast stoff – ikke gass som andre edelgasser.","Det tyngste og siste grunnstoffet i periodesystemet.","Bare fem–seks atomer har noensinne blitt detektert."]}
+];
+
+const engNames={"Hydrogen":"hydrogen","Helium":"helium","Litium":"lithium","Beryllium":"beryllium","Bor":"boron","Karbon":"carbon","Nitrogen":"nitrogen","Oksygen":"oxygen","Fluor":"fluorine","Neon":"neon","Natrium":"sodium","Magnesium":"magnesium","Aluminium":"aluminium","Silisium":"silicon","Fosfor":"phosphorus","Svovel":"sulfur","Klor":"chlorine","Argon":"argon","Kalium":"potassium","Kalsium":"calcium","Scandium":"scandium","Titan":"titanium","Vanadium":"vanadium","Krom":"chromium","Mangan":"manganese","Jern":"iron","Kobolt":"cobalt","Nikkel":"nickel","Kobber":"copper","Sink":"zinc","Gallium":"gallium","Germanium":"germanium","Arsen":"arsenic","Selen":"selenium","Brom":"bromine","Krypton":"krypton","Rubidium":"rubidium","Strontium":"strontium","Yttrium":"yttrium","Zirkonium":"zirconium","Niob":"niobium","Molybden":"molybdenum","Teknetium":"technetium","Ruthenium":"ruthenium","Rhodium":"rhodium","Palladium":"palladium","Sølv":"silver","Kadmium":"cadmium","Indium":"indium","Tinn":"tin","Antimon":"antimony","Tellur":"tellurium","Jod":"iodine","Xenon":"xenon","Cesium":"caesium","Barium":"barium","Lantan":"lanthanum","Cerium":"cerium","Praseodym":"praseodymium","Neodym":"neodymium","Promethium":"promethium","Samarium":"samarium","Europium":"europium","Gadolinium":"gadolinium","Terbium":"terbium","Dysprosium":"dysprosium","Holmium":"holmium","Erbium":"erbium","Thulium":"thulium","Ytterbium":"ytterbium","Lutetium":"lutetium","Hafnium":"hafnium","Tantal":"tantalum","Wolfram":"tungsten","Rhenium":"rhenium","Osmium":"osmium","Iridium":"iridium","Platina":"platinum","Gull":"gold","Kvikksølv":"mercury","Thallium":"thallium","Bly":"lead","Vismut":"bismuth","Polonium":"polonium","Astat":"astatine","Radon":"radon","Francium":"francium","Radium":"radium","Actinium":"actinium","Thorium":"thorium","Protactinium":"protactinium","Uran":"uranium","Neptunium":"neptunium","Plutonium":"plutonium","Americium":"americium","Curium":"curium","Berkelium":"berkelium","Californium":"californium","Einsteinium":"einsteinium","Fermium":"fermium","Mendelevium":"mendelevium","Nobelium":"nobelium","Lawrencium":"lawrencium","Rutherfordium":"rutherfordium","Dubnium":"dubnium","Seaborgium":"seaborgium","Bohrium":"bohrium","Hassium":"hassium","Meitnerium":"meitnerium","Darmstadtium":"darmstadtium","Roentgenium":"roentgenium","Copernicium":"copernicium","Nihonium":"nihonium","Flerovium":"flerovium","Moscovium":"moscovium","Livermorium":"livermorium","Tennessine":"tennessine","Oganesson":"oganesson"};
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function pickNext(pool,mastered,cooldowns,counter){
+  const cands=pool.filter(el=>!mastered.has(el.symbol)&&(cooldowns.get(el.symbol)===undefined||counter-cooldowns.get(el.symbol)>=10));
+  if(cands.length>0)return cands[Math.floor(Math.random()*cands.length)];
+  const cd2=pool.filter(el=>!mastered.has(el.symbol));
+  if(cd2.length>0)return cd2[Math.floor(Math.random()*cd2.length)];
+  return null;
+}
+
+function App(){
+  const[mode,setMode]=useState("menu");
+  const[pool,setPool]=useState([]);
+  const[current,setCurrent]=useState(null);
+  const[input,setInput]=useState("");
+  const[revealed,setRevealed]=useState(false);
+  const[wasCorrect,setWasCorrect]=useState(null);
+  const[imgErr,setImgErr]=useState(false);
+  const[range,setRange]=useState([1,118]);
+  const[stats,setStats]=useState({correct:0,wrong:0,mastered:0,total:0,streak:0,bestStreak:0});
+  const masteredRef=useRef(new Set());
+  const cooldownsRef=useRef(new Map());
+  const counterRef=useRef(0);
+  const poolRef=useRef([]);
+
+  const startQuiz=(lo,hi)=>{
+    const f=elements.filter(el=>el.no>=lo&&el.no<=hi);
+    const s=shuffle(f);
+    poolRef.current=s;masteredRef.current=new Set();cooldownsRef.current=new Map();counterRef.current=0;
+    setPool(s);setStats({correct:0,wrong:0,mastered:0,total:s.length,streak:0,bestStreak:0});
+    setCurrent(pickNext(s,masteredRef.current,cooldownsRef.current,0));
+    setInput("");setRevealed(false);setWasCorrect(null);setImgErr(false);setMode("quiz");
+  };
+
+  const handleSubmit=()=>{
+    if(!input.trim()||revealed)return;
+    const correct=current.name.toLowerCase()===input.trim().toLowerCase();
+    setWasCorrect(correct);counterRef.current++;
+    if(correct){masteredRef.current.add(current.symbol);cooldownsRef.current.delete(current.symbol);setStats(s=>({...s,correct:s.correct+1,mastered:masteredRef.current.size,streak:s.streak+1,bestStreak:Math.max(s.bestStreak,s.streak+1)}));}
+    else{cooldownsRef.current.set(current.symbol,counterRef.current);setStats(s=>({...s,wrong:s.wrong+1,streak:0}));}
+    setRevealed(true);setImgErr(false);
+  };
+
+  const giveUp=()=>{
+    setWasCorrect(false);counterRef.current++;cooldownsRef.current.set(current.symbol,counterRef.current);
+    setStats(s=>({...s,wrong:s.wrong+1,streak:0}));setRevealed(true);setImgErr(false);
+  };
+
+  const next=()=>{
+    const nxt=pickNext(poolRef.current,masteredRef.current,cooldownsRef.current,counterRef.current);
+    if(!nxt)setMode("done");
+    else{setCurrent(nxt);setInput("");setRevealed(false);setWasCorrect(null);setImgErr(false);}
+  };
+
+  const allMastered=stats.mastered>=stats.total&&stats.total>0;
+  const S={
+    page:{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20},
+    card:{background:"rgba(255,255,255,0.05)",backdropFilter:"blur(20px)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:24,padding:"40px 32px",maxWidth:600,width:"100%",textAlign:"center"},
+    btn:{padding:"14px 28px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",fontSize:16,fontWeight:600,cursor:"pointer",boxShadow:"0 4px 15px rgba(99,102,241,0.3)"},
+    btnSec:{padding:"12px 24px",borderRadius:12,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.05)",color:"#cbd5e1",fontSize:14,cursor:"pointer"},
+    inp:{width:"100%",maxWidth:320,padding:"14px 18px",borderRadius:12,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.08)",color:"#f1f5f9",fontSize:16,outline:"none",boxSizing:"border-box",textAlign:"center"},
+    numInp:{width:56,padding:"8px 6px",borderRadius:8,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.08)",color:"#f1f5f9",textAlign:"center",fontSize:15}
+  };
+
+  if(mode==="menu"){
+    return e("div",{style:S.page},
+      e("div",{style:{...S.card,maxWidth:480}},
+        e("div",{style:{fontSize:48,marginBottom:8}},"⚛️"),
+        e("h1",{style:{color:"#f1f5f9",fontSize:28,margin:"0 0 8px",fontWeight:700}},"Periodesystemet Quiz"),
+        e("p",{style:{color:"#94a3b8",margin:"0 0 8px",fontSize:15}},"Evig quiz med spaced repetition"),
+        e("p",{style:{color:"#64748b",margin:"0 0 28px",fontSize:13}},"Riktig = mestret. Feil = kommer tilbake etter 10+ andre spørsmål."),
+        e("div",{style:{display:"flex",gap:12,alignItems:"center",justifyContent:"center",marginBottom:24}},
+          e("label",{style:{color:"#cbd5e1",fontSize:14}},"Grunnstoff"),
+          e("input",{type:"number",min:1,max:118,value:range[0],onChange:ev=>setRange([Math.max(1,+ev.target.value),range[1]]),style:S.numInp}),
+          e("span",{style:{color:"#64748b"}},"–"),
+          e("input",{type:"number",min:1,max:118,value:range[1],onChange:ev=>setRange([range[0],Math.min(118,+ev.target.value)]),style:S.numInp})
+        ),
+        e("div",{style:{display:"flex",flexDirection:"column",gap:10}},
+          e("button",{onClick:()=>startQuiz(range[0],range[1]),style:S.btn},"Start quiz ("+Math.max(0,range[1]-range[0]+1)+" grunnstoffer)"),
+          e("button",{onClick:()=>startQuiz(1,36),style:S.btnSec},"Bare 1–36 (H til Kr)"),
+          e("button",{onClick:()=>startQuiz(1,20),style:S.btnSec},"Nybegynner: 1–20 (H til Ca)")
+        )
+      )
+    );
+  }
+
+  if(mode==="done"){
+    return e("div",{style:S.page},
+      e("div",{style:{...S.card,maxWidth:440}},
+        e("div",{style:{fontSize:56,marginBottom:12}},"🏆"),
+        e("h2",{style:{color:"#f1f5f9",margin:"0 0 8px",fontSize:26}},"Alle mestret!"),
+        e("p",{style:{color:"#94a3b8",margin:"0 0 24px",fontSize:15}},"Du kan alle "+stats.total+" grunnstoffer!"),
+        e("div",{style:{display:"flex",gap:12,justifyContent:"center",marginBottom:8,flexWrap:"wrap"}},
+          e("div",{style:{background:"rgba(34,197,94,0.15)",borderRadius:12,padding:"12px 20px"}},e("div",{style:{color:"#4ade80",fontSize:24,fontWeight:700}},stats.correct),e("div",{style:{color:"#86efac",fontSize:11}},"Riktig")),
+          e("div",{style:{background:"rgba(239,68,68,0.15)",borderRadius:12,padding:"12px 20px"}},e("div",{style:{color:"#f87171",fontSize:24,fontWeight:700}},stats.wrong),e("div",{style:{color:"#fca5a5",fontSize:11}},"Feil")),
+          e("div",{style:{background:"rgba(250,204,21,0.15)",borderRadius:12,padding:"12px 20px"}},e("div",{style:{color:"#facc15",fontSize:24,fontWeight:700}},stats.bestStreak),e("div",{style:{color:"#fde68a",fontSize:11}},"Beste streak"))
+        ),
+        e("p",{style:{color:"#64748b",fontSize:13,margin:"16px 0 24px"}},"Totalt "+(stats.correct+stats.wrong)+" spørsmål besvart"),
+        e("button",{onClick:()=>setMode("menu"),style:S.btn},"Spill igjen")
+      )
+    );
+  }
+
+  if(!current)return null;
+  const eng=engNames[current.name]||current.name.toLowerCase();
+  const imgUrl="https://images-of-elements.com/"+eng+".jpg";
+  const rem=stats.total-stats.mastered;
+
+  return e("div",{style:{minHeight:"100vh",padding:"20px 16px"}},
+    e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",maxWidth:600,margin:"0 auto 12px",padding:"0 4px",flexWrap:"wrap",gap:8}},
+      e("button",{onClick:()=>setMode("menu"),style:{background:"none",border:"none",color:"#64748b",cursor:"pointer",fontSize:14}},"← Meny"),
+      e("div",{style:{display:"flex",gap:14,fontSize:13,flexWrap:"wrap"}},
+        e("span",{style:{color:"#4ade80"}},"✓ "+stats.correct),
+        e("span",{style:{color:"#f87171"}},"✗ "+stats.wrong),
+        stats.streak>=3?e("span",{style:{color:"#facc15"}},"🔥 "+stats.streak):null,
+        e("span",{style:{color:"#8b5cf6"}},"⭐ "+stats.mastered+"/"+stats.total)
+      )
+    ),
+    e("div",{style:{maxWidth:600,margin:"0 auto 20px",height:6,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}},
+      e("div",{style:{height:"100%",width:(stats.mastered/stats.total*100)+"%",background:"linear-gradient(90deg,#6366f1,#22c55e)",borderRadius:3,transition:"width 0.5s ease"}})
+    ),
+    e("p",{style:{textAlign:"center",color:"#64748b",fontSize:12,margin:"0 auto 16px"}},(rem)+" grunnstoff"+(rem!==1?"er":"")+" gjenstår"),
+    e("div",{style:{maxWidth:600,margin:"0 auto"}},
+      e("div",{style:S.card},
+        e("p",{style:{color:"#94a3b8",fontSize:14,margin:"0 0 12px",letterSpacing:1}},"HVILKET GRUNNSTOFF HAR SYMBOLET"),
+        e("div",{style:{display:"inline-flex",alignItems:"center",justifyContent:"center",width:100,height:100,borderRadius:20,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",marginBottom:24,boxShadow:"0 8px 32px rgba(99,102,241,0.3)"}},
+          e("span",{style:{fontSize:44,fontWeight:800,color:"#fff"}},current.symbol)
+        ),
+        !revealed?e("div",null,
+          e("input",{value:input,onChange:ev=>setInput(ev.target.value),onKeyDown:ev=>{if(ev.key==="Enter")handleSubmit()},placeholder:"Skriv navnet på grunnstoffet...",autoFocus:true,style:S.inp}),
+          e("div",{style:{marginTop:16}},
+            e("button",{onClick:handleSubmit,disabled:!input.trim(),style:{...S.btn,opacity:input.trim()?1:0.4,cursor:input.trim()?"pointer":"default"}},"Sjekk svar")
+          ),
+          e("button",{onClick:giveUp,style:{marginTop:12,background:"none",border:"none",color:"#64748b",cursor:"pointer",fontSize:13}},"Vet ikke – vis fasit")
+        ):e("div",null,
+          e("div",{style:{display:"inline-block",padding:"8px 20px",borderRadius:20,marginBottom:20,background:wasCorrect?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.15)",color:wasCorrect?"#4ade80":"#f87171",fontWeight:600,fontSize:15}},wasCorrect?"✓ Riktig! Mestret!":"✗ Feil – du svarte «"+(input.trim()||"—")+"». Kommer tilbake!"),
+          e("div",{style:{display:"flex",gap:20,alignItems:"flex-start",textAlign:"left",flexWrap:"wrap",justifyContent:"center"}},
+            !imgErr?e("div",{style:{width:150,minWidth:150,borderRadius:16,overflow:"hidden",border:"1px solid rgba(255,255,255,0.1)",flexShrink:0}},
+              e("img",{src:imgUrl,alt:current.name,onError:()=>setImgErr(true),style:{width:"100%",height:150,objectFit:"cover",display:"block"}})
+            ):null,
+            e("div",{style:{flex:1,minWidth:220}},
+              e("h2",{style:{color:"#f1f5f9",margin:"0 0 4px",fontSize:22}},current.name),
+              e("p",{style:{color:"#8b5cf6",margin:"0 0 12px",fontSize:14,fontWeight:500}},"#"+current.no+" · "+current.symbol),
+              e("p",{style:{color:"#94a3b8",margin:"0 0 8px",fontSize:13,lineHeight:1.5}},e("span",{style:{color:"#64748b"}},"Oppdaget: "),current.year+" av "+current.by),
+              e("p",{style:{color:"#c4b5fd",margin:"0 0 14px",fontSize:13,lineHeight:1.6,fontStyle:"italic"}},"📛 "+current.named),
+              current.facts.map((f,i)=>e("p",{key:i,style:{color:"#cbd5e1",margin:"0 0 8px",fontSize:13,lineHeight:1.6}},"💡 "+f))
+            )
+          ),
+          e("button",{onClick:allMastered?()=>setMode("done"):next,autoFocus:true,style:{...S.btn,marginTop:24}},allMastered?"🏆 Se resultat":"Neste spørsmål →")
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+</script>
+</body>
+</html>
