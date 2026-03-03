@@ -148,6 +148,18 @@ const engNames={"Hydrogen":"hydrogen","Helium":"helium","Litium":"lithium","Bery
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 
+function fuzzyMatch(input,target){
+  const a=input.toLowerCase().trim(),b=target.toLowerCase();
+  if(a===b)return true;
+  const maxD=b.length<=5?1:2;
+  if(Math.abs(a.length-b.length)>maxD)return false;
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>{const r=new Array(n+1);r[0]=i;return r;});
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n]<=maxD;
+}
+
 function pickNext(pool,mastered,cooldowns,counter){
   const cands=pool.filter(el=>!mastered.has(el.symbol)&&(cooldowns.get(el.symbol)===undefined||counter-cooldowns.get(el.symbol)>=10));
   if(cands.length>0)return cands[Math.floor(Math.random()*cands.length)];
@@ -182,7 +194,7 @@ function App(){
 
   const handleSubmit=()=>{
     if(!input.trim()||revealed)return;
-    const correct=current.name.toLowerCase()===input.trim().toLowerCase();
+    const correct=fuzzyMatch(input.trim(),current.name);
     setWasCorrect(correct);counterRef.current++;
     if(correct){masteredRef.current.add(current.symbol);cooldownsRef.current.delete(current.symbol);setStats(s=>({...s,correct:s.correct+1,mastered:masteredRef.current.size,streak:s.streak+1,bestStreak:Math.max(s.bestStreak,s.streak+1)}));}
     else{cooldownsRef.current.set(current.symbol,counterRef.current);setStats(s=>({...s,wrong:s.wrong+1,streak:0}));}
@@ -210,16 +222,30 @@ function App(){
     numInp:{width:56,padding:"8px 6px",borderRadius:8,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.08)",color:"#f1f5f9",textAlign:"center",fontSize:15}
   };
 
-  if(mode==="menu"){
+  const catImg="cat.jpg";
+
+  if(mode==="exit"){
     return e("div",{style:S.page},
-      e("div",{style:{...S.card,maxWidth:480}},
-        e("div",{style:{fontSize:48,marginBottom:8}},"⚛️"),
-        e("h1",{style:{color:"#f1f5f9",fontSize:28,margin:"0 0 8px",fontWeight:700}},"Silje vs. grunnstoffene"),
-        e("p",{style:{color:"#94a3b8",margin:"0 0 8px",fontSize:15}},"Evig quiz med spaced repetition"),
-        e("p",{style:{color:"#64748b",margin:"0 0 28px",fontSize:13}},"Riktig = mestret. Feil = kommer tilbake etter 10+ andre spørsmål."),
+      e("div",{style:{...S.card,maxWidth:440}},
+        e("div",{style:{fontSize:56,marginBottom:12}},"👋"),
+        e("h2",{style:{color:"#f1f5f9",margin:"0 0 12px",fontSize:24}},"Ha det bra!"),
+        e("p",{style:{color:"#94a3b8",margin:"0 0 28px",fontSize:15,lineHeight:1.6}},"Sveip opp fra bunnen (eller bruk app-bytteren) for å lukke appen."),
+        e("button",{onClick:()=>setMode("menu"),style:S.btn},"← Tilbake til menyen")
+      )
+    );
+  }
+
+  if(mode==="menu"){
+    return e("div",{style:{...S.page,position:"relative",overflow:"hidden"}},
+      e("div",{style:{position:"absolute",inset:0,backgroundImage:"url("+catImg+")",backgroundSize:"cover",backgroundPosition:"center",opacity:0.25,filter:"blur(2px)"}}),
+      e("div",{style:{position:"relative",zIndex:1,background:"rgba(15,23,42,0.75)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:28,padding:"40px 36px 36px",maxWidth:420,width:"100%",textAlign:"center"}},
+        e("div",{style:{width:120,height:120,borderRadius:"50%",margin:"0 auto 20px",backgroundImage:"url("+catImg+")",backgroundSize:"cover",backgroundPosition:"center 20%",border:"3px solid rgba(139,92,246,0.5)",boxShadow:"0 0 30px rgba(139,92,246,0.25)"}}),
+        e("h1",{style:{color:"#f1f5f9",fontSize:26,margin:"0 0 6px",fontWeight:700}},"Silje vs. grunnstoffene"),
+        e("p",{style:{color:"#c4b5fd",margin:"0 0 6px",fontSize:14}},"⚛️ Evig quiz med bjørntoriske mengder anekdoter om grunnstoffene!"),
+        e("p",{style:{color:"#64748b",margin:"0 0 28px",fontSize:13,lineHeight:1.5}},"Svarer du riktig er grunnstoffet mestret. Svarer du feil, dukker det opp igjen etter 10+ andre spørsmål."),
         e("div",{style:{display:"flex",flexDirection:"column",gap:10}},
           e("button",{onClick:()=>startQuiz(1,118),style:S.btn},"Start quiz"),
-          e("button",{onClick:()=>window.close(),style:S.btnSec},"Avslutt quiz")
+          e("button",{onClick:()=>setMode("exit"),style:S.btnSec},"Avslutt quiz")
         )
       )
     );
