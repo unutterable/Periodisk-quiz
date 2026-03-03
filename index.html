@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Grunnstoff">
+<meta name="apple-mobile-web-app-title" content="Silje vs.">
 <meta name="theme-color" content="#0f172a">
-<title>Periodesystemet Quiz</title>
+<title>Silje vs. grunnstoffene</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -214,19 +214,12 @@ function App(){
     return e("div",{style:S.page},
       e("div",{style:{...S.card,maxWidth:480}},
         e("div",{style:{fontSize:48,marginBottom:8}},"⚛️"),
-        e("h1",{style:{color:"#f1f5f9",fontSize:28,margin:"0 0 8px",fontWeight:700}},"Periodesystemet Quiz"),
+        e("h1",{style:{color:"#f1f5f9",fontSize:28,margin:"0 0 8px",fontWeight:700}},"Silje vs. grunnstoffene"),
         e("p",{style:{color:"#94a3b8",margin:"0 0 8px",fontSize:15}},"Evig quiz med spaced repetition"),
         e("p",{style:{color:"#64748b",margin:"0 0 28px",fontSize:13}},"Riktig = mestret. Feil = kommer tilbake etter 10+ andre spørsmål."),
-        e("div",{style:{display:"flex",gap:12,alignItems:"center",justifyContent:"center",marginBottom:24}},
-          e("label",{style:{color:"#cbd5e1",fontSize:14}},"Grunnstoff"),
-          e("input",{type:"number",min:1,max:118,value:range[0],onChange:ev=>setRange([Math.max(1,+ev.target.value),range[1]]),style:S.numInp}),
-          e("span",{style:{color:"#64748b"}},"–"),
-          e("input",{type:"number",min:1,max:118,value:range[1],onChange:ev=>setRange([range[0],Math.min(118,+ev.target.value)]),style:S.numInp})
-        ),
         e("div",{style:{display:"flex",flexDirection:"column",gap:10}},
-          e("button",{onClick:()=>startQuiz(range[0],range[1]),style:S.btn},"Start quiz ("+Math.max(0,range[1]-range[0]+1)+" grunnstoffer)"),
-          e("button",{onClick:()=>startQuiz(1,36),style:S.btnSec},"Bare 1–36 (H til Kr)"),
-          e("button",{onClick:()=>startQuiz(1,20),style:S.btnSec},"Nybegynner: 1–20 (H til Ca)")
+          e("button",{onClick:()=>startQuiz(1,118),style:S.btn},"Start quiz"),
+          e("button",{onClick:()=>window.close(),style:S.btnSec},"Avslutt quiz")
         )
       )
     );
